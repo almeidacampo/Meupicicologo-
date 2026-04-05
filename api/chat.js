@@ -1,3 +1,5 @@
+const ANTHROPIC_KEY = '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';
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -11,7 +13,7 @@ export default async function handler(req, res) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-api-key': process.env.ANTHROPIC_KEY,
+        'x-api-key': ANTHROPIC_KEY,
         'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify(req.body)
