@@ -623,18 +623,14 @@
 
     <div class="login-form">
       <div class="login-field">
-        <label>Usuário</label>
-        <input type="text" id="login-user" placeholder="Digite seu usuário" autocomplete="username"/>
-      </div>
-      <div class="login-field">
-        <label>Senha</label>
-        <input type="password" id="login-pass" placeholder="Digite sua senha"
-          autocomplete="current-password"
+        <label>Seu nome</label>
+        <input type="text" id="login-user" placeholder="Digite seu nome"
+          autocomplete="name"
           onkeydown="if(event.key==='Enter')doLogin()"/>
       </div>
-      <div class="login-error" id="login-error">Usuário ou senha incorretos.</div>
-      <button class="login-btn" onclick="doLogin()">Entrar</button>
-      <div class="login-hint">Acesso restrito a usuários cadastrados</div>
+      <div class="login-error" id="login-error">Por favor, digite seu nome.</div>
+      <button class="login-btn" onclick="doLogin()">Teste grátis →</button>
+      <div class="login-hint">Experimente gratuitamente • Sem cartão necessário</div>
     </div>
   </div>
 </div>
@@ -774,6 +770,7 @@
 </div>
 
 
+<script>
 // ── CONFIGURAÇÕES (edite aqui) ──
 var API_KEY = ''; // Chave protegida no servidor Vercel
 var LIMITE_MENSAGENS = 20;
@@ -827,11 +824,8 @@ function atualizarContador() {
 })();
 
 // LOGIN
-var SENHA_CORRETA = '1234';
-
 function doLogin() {
   var user = document.getElementById('login-user').value.trim();
-  var pass = document.getElementById('login-pass').value;
   var err  = document.getElementById('login-error');
 
   if (user === '') {
@@ -840,32 +834,23 @@ function doLogin() {
     return;
   }
 
-  if (pass === SENHA_CORRETA) {
-    err.style.display = 'none';
+  err.style.display = 'none';
+  currentUser = getUserData(user);
 
-    // Carrega ou cria dados do usuário
-    currentUser = getUserData(user);
-
-    if (currentUser.bloqueado || currentUser.mensagens >= LIMITE_MENSAGENS) {
-      err.textContent = '⚠️ Você atingiu o limite de mensagens. Entre em contato para renovar seu acesso.';
-      err.style.display = 'block';
-      return;
-    }
-
-    var screen = document.getElementById('login-screen');
-    screen.style.transition = 'opacity 0.6s ease';
-    screen.style.opacity = '0';
-    setTimeout(function(){
-      screen.style.display = 'none';
-      atualizarContador();
-    }, 600);
-  } else {
-    err.textContent = 'Senha incorreta. Tente novamente.';
+  if (currentUser.bloqueado || currentUser.mensagens >= LIMITE_MENSAGENS) {
+    err.textContent = '⚠️ Seu teste gratuito acabou. Assine por R$ 9,90/mês para continuar.';
     err.style.display = 'block';
-    var form = document.querySelector('.login-form');
-    form.style.animation = 'shake 0.4s ease';
-    setTimeout(function(){ form.style.animation = ''; }, 400);
+    setTimeout(function(){ mostrarPagamento(); }, 1500);
+    return;
   }
+
+  var screen = document.getElementById('login-screen');
+  screen.style.transition = 'opacity 0.6s ease';
+  screen.style.opacity = '0';
+  setTimeout(function(){
+    screen.style.display = 'none';
+    atualizarContador();
+  }, 600);
 }
 
 // NAVEGAÇÃO
