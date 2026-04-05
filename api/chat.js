@@ -10,37 +10,23 @@ export default async function handler(req, res) {
 
   try {
     const body = req.body;
-    
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'x-api-key': ANTHROPIC_KEY,
-        'anthropic-version': '2023-06-01',
-        'anthropic-beta': 'messages-2023-12-15'
+        'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
-        model: body.model || 'claude-sonnet-4-20250514',
+        model: 'claude-3-5-haiku-20241022',
         max_tokens: body.max_tokens || 1000,
         system: body.system || '',
         messages: body.messages || []
       })
     });
-
-    const text = await response.text();
-    
-    try {
-      const data = JSON.parse(text);
-      res.status(200).json(data);
-    } catch(e) {
-      res.status(200).json({ 
-        content: [{ type: 'text', text: text }] 
-      });
-    }
-
+    const data = await response.json();
+    res.status(200).json(data);
   } catch (err) {
-    res.status(500).json({ 
-      content: [{ type: 'text', text: 'Erro: ' + err.message }] 
-    });
+    res.status(500).json({ error: err.message });
   }
 }
